@@ -95,4 +95,19 @@ The dataset is described as:
 
 I have used some Excel magic to join the several files and build a view on the data, that could be parsed easily.
 
+## Apache Jena Fuseki ##
+
+You can start the ``fuseki-server`` for this experiment by running: 
+
+```
+fuseki-server --tdb2 --loc=<DATA_DIRECTORY> /aviation
+```
+
+Where:
+
+* ``--tdb2`` instructs Apache Jena to use its new TDB2
+* ``--loc=<DATA_DIRECTORY>`` is the directory where the data should be written to
+* ``/aviation`` is the named Graph we register
+
+
 [Apache Jena]: https://jena.apache.org
