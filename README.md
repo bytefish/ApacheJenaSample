@@ -6,6 +6,17 @@ This repository is an experiment for working with [Apache Jena]:
 > semantic web and Linked Data applications. The framework is composed of different APIs 
 > interacting together to process RDF data.
 
+The idea is to use a [Triplestore] to infer knowledge about Aviation data, using information from:
+
+* Aircrafts
+* Airports
+* Carriers
+* Flights
+* Weather Stations
+* ASOS / METAR Weather Data
+
+[Triplestore]: https://en.wikipedia.org/wiki/Triplestore
+
 ## Datasets ##
 
 ## Airline On Time Performance (AOTP) Data ##
