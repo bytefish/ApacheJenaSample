@@ -52,7 +52,7 @@ aviation and meterological operations. The NOAA website writes on ASOS weather s
 > located at an airport; for example, one of these units is located at Central Park in New York City. 
 > ASOS data are archived in the Global Surface Hourly database, with data from as early as 1901.
 
-The [Iowa State University] haosts an archive of automated airport weather observations:
+The [Iowa State University] hosts an archive of automated airport weather observations:
 
 > The IEM maintains an ever growing archive of automated airport weather observations from around 
 > the world! These observations are typically called 'ASOS' or sometimes 'AWOS' sensors. A more 
