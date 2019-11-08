@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRDF" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ApacheJenaSample.Csv.Aotp\ApacheJenaSample.Csv.Aotp.csproj" />
+    <ProjectReference Include="..\ApacheJenaSample.Csv.Asos\ApacheJenaSample.Csv.Asos.csproj" />
+    <ProjectReference Include="..\ApacheJenaSample.Csv.Faa\ApacheJenaSample.Csv.Faa.csproj" />
+    <ProjectReference Include="..\ApacheJenaSample.Csv.Ncar\ApacheJenaSample.Csv.Ncar.csproj" />
+  </ItemGroup>
+
+</Project>
