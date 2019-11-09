@@ -166,7 +166,7 @@ namespace ApacheJenaSample.Exporter
             WriteWeatherDatas(connector, stations);
         }
 
-        private static void WriteAircrafts(FusekiConnector connector, IEnumerable<AircraftDto> aircrafts)
+        private static void WriteAircrafts(IStorageProvider connector, IEnumerable<AircraftDto> aircrafts)
         {
             foreach (var batch in aircrafts
                 .SelectMany(x => ConvertAircraft(x))
@@ -193,7 +193,7 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteAirports(FusekiConnector connector, IEnumerable<AirportDto> airports)
+        private static void WriteAirports(IStorageProvider connector, IEnumerable<AirportDto> airports)
         {
             foreach (var batch in airports
                 .SelectMany(x => ConvertAirport(x))
@@ -216,7 +216,7 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteCarriers(FusekiConnector connector, IEnumerable<CarrierDto> carriers)
+        private static void WriteCarriers(IStorageProvider connector, IEnumerable<CarrierDto> carriers)
         {
             foreach (var batch in carriers
                 .SelectMany(x => ConvertCarrier(x))
@@ -235,7 +235,7 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteFlights(FusekiConnector connector, List<AircraftDto> aircrafts, List<AirportDto> airports, List<CarrierDto> carriers)
+        private static void WriteFlights(IStorageProvider connector, List<AircraftDto> aircrafts, List<AirportDto> airports, List<CarrierDto> carriers)
         {
             // Build Lookup Tables. We group by a criteria, to prevent duplicates 
             // from being used as dictionary keys.
@@ -312,7 +312,7 @@ namespace ApacheJenaSample.Exporter
             return triples.Build();
         }
 
-        private static void WriteWeatherStations(FusekiConnector connector, IEnumerable<WeatherStationDto> stations, IEnumerable<AirportDto> airports)
+        private static void WriteWeatherStations(IStorageProvider connector, IEnumerable<WeatherStationDto> stations, IEnumerable<AirportDto> airports)
         {
             var airportNodes = airports
                 .GroupBy(x => x.AirportId).Select(x => x.First())
@@ -347,7 +347,7 @@ namespace ApacheJenaSample.Exporter
             return triples.Build();
         }
 
-        private static void WriteWeatherDatas(FusekiConnector connector, IEnumerable<WeatherStationDto> stations)
+        private static void WriteWeatherDatas(IStorageProvider connector, IEnumerable<WeatherStationDto> stations)
         {
             var stationNodes = stations
                 .GroupBy(x => x.IATA).Select(x => x.First())
@@ -418,7 +418,7 @@ namespace ApacheJenaSample.Exporter
 
         #region Utilities
 
-        private static void AddTriples(FusekiConnector connector, IEnumerable<Triple> triples)
+        private static void AddTriples(IStorageProvider connector, IEnumerable<Triple> triples)
         {
             connector.UpdateGraph("/aviation", triples, new Triple[] { });
         }
