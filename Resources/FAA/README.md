@@ -49,7 +49,7 @@ is given by the parameters in the group ``Parameters``:
 
 
 <a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Overview.png">
-	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Overview.png" width="50%" height="50%" alt="Power Query Editor Groups" />
+	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Overview.png" width="30%" height="30%" alt="Power Query Editor Groups" />
 </a>
 
 To read the data, you have to adjust the path to the CSV Files:
