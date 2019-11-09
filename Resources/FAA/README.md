@@ -30,7 +30,7 @@ We can use [Power Query] to read and preprocess the data:
 
 I have an Excel file, that contains all Power Queries to produce the Merged CSV File:
 
-* []()
+* [https://github.com/bytefish/ApacheJenaSample/blob/master/Resources/FAA/FAA_AircraftRegistration_Database.xlsx](https://github.com/bytefish/ApacheJenaSample/blob/master/Resources/FAA/FAA_AircraftRegistration_Database.xlsx)
 
 Basically the dataset contains of 6 CSV files:
 
