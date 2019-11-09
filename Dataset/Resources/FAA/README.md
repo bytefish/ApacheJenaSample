@@ -30,7 +30,7 @@ We can use [Power Query] to read and preprocess the data:
 
 I have an Excel file, that contains all Power Queries to produce the Merged CSV File:
 
-* [https://github.com/bytefish/ApacheJenaSample/blob/master/Resources/FAA/FAA_AircraftRegistration_Database.xlsx](https://github.com/bytefish/ApacheJenaSample/blob/master/Resources/FAA/FAA_AircraftRegistration_Database.xlsx)
+* [https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx](https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx)
 
 Basically the dataset contains of 6 CSV files:
 
@@ -48,19 +48,15 @@ joins between the tables and put it in a group called ``Merged Data``. The locat
 is given by the parameters in the group ``Parameters``:
 
 
-<a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Overview.png">
-	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Overview.png" width="30%" height="30%" alt="Power Query Editor Groups" />
+<a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Overview.png">
+	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Overview.png" width="30%" height="30%" alt="Power Query Editor Groups" />
 </a>
 
 To read the data, you have to adjust the path to the CSV Files:
 
-<a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Parameters.png">
-	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Resources/FAA/Images/PowerQueryEditor_Parameters.png" width="50%" height="50%" alt="Power Query Editor Groups" />
+<a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Parameters.png">
+	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Parameters.png" width="50%" height="50%" alt="Power Query Editor Groups" />
 </a>
-
-
-
-
 
 [Power Query]: https://docs.microsoft.com/en-us/power-query/
 [Aircraft Registry Releasable Aircraft Database]: https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/
