@@ -108,6 +108,11 @@ namespace ApacheJenaSample.Exporter
         private static string csvAirportFile = @"D:\flights_data\aotp\master_cord.csv";
 
         /// <summary>
+        /// FAA Aircraft Data.
+        /// </summary>
+        private static string csvAircraftsFile = @"D:\flights_data\faa\FAA_AircraftRegistration_Database.csv";
+
+        /// <summary>
         /// Carriers.
         /// </summary>
         private static string csvCarriersFile = @"D:\flights_data\aotp\unqiue_carriers.csv";
@@ -148,7 +153,7 @@ namespace ApacheJenaSample.Exporter
             var connector = new FusekiConnector("http://localhost:3030/aviation/data");
             
             // Write Aircrafts:
-            var aircrafts = GetAircraftData(csvAirportFile).ToList();
+            var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
             var carriers = GetCarrierData(csvCarriersFile).ToList();
             var airports = GetAirportData(csvAirportFile).ToList();
             var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
@@ -441,7 +446,6 @@ namespace ApacheJenaSample.Exporter
 
         private static ParallelQuery<AircraftDto> GetAircraftData(string filename)
         {
-
             return Csv.Faa.Parser.Parsers.FaaAircraftParser
                 // Parse as ASCII file:
                 .ReadFromFile(filename, Encoding.ASCII)
