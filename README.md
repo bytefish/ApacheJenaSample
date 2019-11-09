@@ -93,7 +93,9 @@ The dataset is described as:
 >
 > Files are updated each federal business day. The records in each database file are stored in a comma delimited format (CDF) and can be manipulated by common database management applications, such as MS Access.
 
-I have used some Excel magic to join the several files and build a view on the data, that could be parsed easily.
+I have used some Excel magic to join the several files and build a view on the data, that could be parsed easily:
+
+* [https://github.com/bytefish/ApacheJenaSample/tree/master/Resources/FAA](https://github.com/bytefish/ApacheJenaSample/tree/master/Resources/FAA)
 
 ## Apache Jena Fuseki ##
 
