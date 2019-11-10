@@ -24,12 +24,10 @@ namespace ApacheJenaSample.Exporter
             return nodeFactory.CreateVariableNode(value);
         }
 
-
         public static INode AsUriNode(this INodeFactory nodeFactory, Uri uri)
         {
             return nodeFactory.CreateUriNode(uri);
         }
-
 
         public static INode AsLiteralNode(this INodeFactory nodeFactory, string value)
         {
@@ -268,7 +266,6 @@ namespace ApacheJenaSample.Exporter
 
         private static List<Triple> ConvertFlight(FlightDto flight, Dictionary<string, AircraftDto> aircrafts, Dictionary<string, AirportDto> airports, Dictionary<string, CarrierDto> carriers)
         {
-
             var triples = new TripleBuilder(nodeFactory.AsUriNode(flight.Uri));
 
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.Type), nodeFactory.AsValueNode(Constants.Types.Flight));
