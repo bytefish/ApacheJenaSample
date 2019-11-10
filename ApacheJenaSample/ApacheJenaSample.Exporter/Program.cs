@@ -150,20 +150,22 @@ namespace ApacheJenaSample.Exporter
         public static void Main(string[] args)
         {
             // Use Apache Jena Fuseki Connector:
-            var connector = new FusekiConnector("http://localhost:3030/aviation/data");
-            
-            // Write Aircrafts:
-            var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
-            var carriers = GetCarrierData(csvCarriersFile).ToList();
-            var airports = GetAirportData(csvAirportFile).ToList();
-            var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
+            using (var connector = new FusekiConnector("http://localhost:3030/aviation/data"))
+            {
 
-            WriteAircrafts(connector, aircrafts);
-            WriteAirports(connector, airports);
-            WriteCarriers(connector, carriers);
-            WriteFlights(connector, aircrafts, airports, carriers);
-            WriteWeatherStations(connector, stations, airports);
-            WriteWeatherDatas(connector, stations);
+                // Write Aircrafts:
+                var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
+                var carriers = GetCarrierData(csvCarriersFile).ToList();
+                var airports = GetAirportData(csvAirportFile).ToList();
+                var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
+
+                WriteAircrafts(connector, aircrafts);
+                WriteAirports(connector, airports);
+                WriteCarriers(connector, carriers);
+                WriteFlights(connector, aircrafts, airports, carriers);
+                WriteWeatherStations(connector, stations, airports);
+                WriteWeatherDatas(connector, stations);
+            }
         }
 
         private static void WriteAircrafts(IStorageProvider connector, IEnumerable<AircraftDto> aircrafts)
@@ -320,7 +322,7 @@ namespace ApacheJenaSample.Exporter
 
             foreach (var batch in stations
                 .SelectMany(x => ConvertWeatherStation(x, airportNodes))
-                .Batch(100))
+                .Batch(1000))
             {
                 AddTriples(connector, batch);
             }
@@ -415,15 +417,6 @@ namespace ApacheJenaSample.Exporter
 
             return triples.Build();
         }
-
-        #region Utilities
-
-        private static void AddTriples(IStorageProvider connector, IEnumerable<Triple> triples)
-        {
-            connector.UpdateGraph("/aviation", triples, new Triple[] { });
-        }
-        
-        #endregion
 
         #region CSV Parsing 
 
@@ -666,6 +659,11 @@ namespace ApacheJenaSample.Exporter
             {
                 return triples;
             }
+        }
+
+        private static void AddTriples(IStorageProvider connector, IEnumerable<Triple> triples)
+        {
+            connector.UpdateGraph("/aviation", triples, new Triple[] { });
         }
 
         #endregion
