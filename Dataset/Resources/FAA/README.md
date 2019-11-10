@@ -1,7 +1,9 @@
 # Preprocessing the FAA Aircraft Registry Database #
 
-The FAA [Aircraft Registry Releasable Aircraft Database] contains registered aircrafts and associtated data, like 
-the tail number, seats, engine types. The dataset is available at the FAA website at:
+The FAA [Aircraft Registry Releasable Aircraft Database] contains registered aircrafts and associtated 
+data, such as tail number, seats, engine types. 
+
+The dataset is available at:
 
 * [https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/](https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/)
 
@@ -22,17 +24,7 @@ It is described as:
 
 ## Processing the data with Excel and Power Query ##
 
-We can use [Power Query] to read and preprocess the data:
-
-> Power Query is the Data Connectivity and Data Preparation technology that enables end users to 
-> seamlessly import and reshape data from within a wide range of Microsoft products, including Excel, 
-> Power BI, Analysis Services, Common Data Services for Apps & Analytics, and more.
-
-I have an Excel file, that contains all Power Queries to produce the Merged CSV File:
-
-* [https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx](https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx)
-
-Basically the dataset contains of 6 CSV files:
+Basically the original FAA dataset contains 6 CSV files:
 
 * ``ACTREF.txt``
 * ``DEALER.txt``
@@ -41,12 +33,21 @@ Basically the dataset contains of 6 CSV files:
 * ``ENGINE.txt``
 * ``MASTER.txt``
 
-The files reference each other by unqiue identifiers, so we can perform join between the files. 
+The files reference each other by unqiue identifiers, so it's possible to join the data. 
 
-First of all I imported the CSV Files and put them in a group called ``Raw Data``. Then I performed 
-joins between the tables and put it in a group called ``Merged Data``. The location of the CSV files 
-is given by the parameters in the group ``Parameters``:
+[Power Query] makes it easy to transform the data. Microsoft writes on Power Query:
 
+> Power Query is the Data Connectivity and Data Preparation technology that enables end users to 
+> seamlessly import and reshape data from within a wide range of Microsoft products, including Excel, 
+> Power BI, Analysis Services, Common Data Services for Apps & Analytics, and more.
+
+I provide an Excel file, that contains all Power Queries to produce the merged CSV file:
+
+* [https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx](https://github.com/bytefish/ApacheJenaSample/blob/master/Dataset/Resources/FAA/FAA_AircraftRegistration_Database.xlsx)
+
+I basically imported the CSV Files and put them in a group called ``Raw Data``. Then I performed joins between 
+the tables and put the results in a group called ``Merged Data``. The location of the raw CSV files is given by 
+the parameters in the group ``Parameters``:
 
 <a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Overview.png">
 	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Overview.png" width="30%" height="30%" alt="Power Query Editor Groups" />
@@ -57,6 +58,8 @@ To read the data, you have to adjust the path to the CSV Files:
 <a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Parameters.png">
 	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Dataset/Resources/FAA/Images/PowerQueryEditor_Parameters.png" width="50%" height="50%" alt="Power Query Editor Groups" />
 </a>
+
+The final dataset is a CSV export of the ``MergedData_Reduced`` Excel Spreadsheet.
 
 [Power Query]: https://docs.microsoft.com/en-us/power-query/
 [Aircraft Registry Releasable Aircraft Database]: https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/
