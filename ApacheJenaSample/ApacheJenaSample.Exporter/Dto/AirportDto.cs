@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using ApacheJenaSample.Exporter.Extensions;
 using System;
 using System.Xml;
 
@@ -8,7 +9,7 @@ namespace ApacheJenaSample.Exporter.Dto
 {
     public class AirportDto
     {
-        public Uri Uri => new Uri(Constants.NsAviationAirport, XmlConvert.EncodeName($"aircraft_{IATA}"));
+        public Uri Uri => UriHelper.Combine(Constants.NsAviationAirport, XmlConvert.EncodeName($"aircraft_{IATA}"));
 
         public string AirportId { get; set; }
 

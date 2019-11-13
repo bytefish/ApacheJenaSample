@@ -4,9 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using ApacheJenaSample.Csv.Aotp.Parser;
+using ApacheJenaSample.Exporter.Async;
 using ApacheJenaSample.Exporter.Dto;
 using ApacheJenaSample.Exporter.Extensions;
 using TinyCsvParser;
@@ -14,6 +17,7 @@ using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing.Formatting;
 
 namespace ApacheJenaSample.Exporter
 {
@@ -127,8 +131,7 @@ namespace ApacheJenaSample.Exporter
         {
             get
             {
-                return new[] { @"D:\flights_data\aotp\2014\airOT201401.csv" };
-                //return Directory.GetFiles(@"D:\flights_data\aotp\2014", "*.csv");
+                return Directory.GetFiles(@"D:\flights_data\aotp\2014", "*.csv");
             }
         }
 
@@ -144,35 +147,41 @@ namespace ApacheJenaSample.Exporter
         }
 
         private static INodeFactory nodeFactory = new NodeFactory();
+        private static TurtleFormatter turtleFormatter = new TurtleFormatter();
+
 
         public static void Main(string[] args)
         {
-            // Use Apache Jena Fuseki Connector:
-            using (var connector = new FusekiConnector("http://localhost:3030/aviation/data"))
+            
+            // Write Aircrafts:
+            var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
+            var carriers = GetCarrierData(csvCarriersFile).ToList();
+            var airports = GetAirportData(csvAirportFile).ToList();
+            var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
+
+            using (FileStream fileStream = File.Create(@"G:\aviation_2014.ttl"))
             {
-
-                // Write Aircrafts:
-                var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
-                var carriers = GetCarrierData(csvCarriersFile).ToList();
-                var airports = GetAirportData(csvAirportFile).ToList();
-                var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
-
-                WriteAircrafts(connector, aircrafts);
-                WriteAirports(connector, airports);
-                WriteCarriers(connector, carriers);
-                WriteFlights(connector, aircrafts, airports, carriers);
-                WriteWeatherStations(connector, stations, airports);
-                WriteWeatherDatas(connector, stations);
+                using (GZipStream compress = new GZipStream(fileStream, CompressionMode.Compress))
+                {
+                    using (StreamWriter writer = new StreamWriter(fileStream))
+                    {
+                        WriteAircrafts(writer, aircrafts);
+                        WriteAirports(writer, airports);
+                        WriteCarriers(writer, carriers);
+                        WriteFlights(writer, aircrafts, airports, carriers);
+                        WriteWeatherStations(writer, stations, airports);
+                        WriteWeatherDatas(writer, stations);
+                    }
+                }
             }
         }
 
-        private static void WriteAircrafts(IStorageProvider connector, IEnumerable<AircraftDto> aircrafts)
+        private static void WriteAircrafts(StreamWriter streamWriter, IEnumerable<AircraftDto> aircrafts)
         {
-            foreach (var batch in aircrafts
-                .SelectMany(x => ConvertAircraft(x))
-                .Batch(1000))
+            foreach (var triple in aircrafts
+                .SelectMany(x => ConvertAircraft(x)))
             {
-                AddTriples(connector, batch);
+                WriteTriple(streamWriter, triple);
             }
         }
 
@@ -193,13 +202,12 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteAirports(IStorageProvider connector, IEnumerable<AirportDto> airports)
+        private static void WriteAirports(StreamWriter streamWriter, IEnumerable<AirportDto> airports)
         {
-            foreach (var batch in airports
-                .SelectMany(x => ConvertAirport(x))
-                .Batch(1000))
+            foreach (var triple in airports
+                .SelectMany(x => ConvertAirport(x)))
             {
-                AddTriples(connector, batch);
+                WriteTriple(streamWriter, triple);
             }
         }
 
@@ -216,13 +224,12 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteCarriers(IStorageProvider connector, IEnumerable<CarrierDto> carriers)
+        private static void WriteCarriers(StreamWriter streamWriter, IEnumerable<CarrierDto> carriers)
         {
-            foreach (var batch in carriers
-                .SelectMany(x => ConvertCarrier(x))
-                .Batch(1000))
+            foreach (var triple in carriers
+                .SelectMany(x => ConvertCarrier(x)))
             {
-                AddTriples(connector, batch);
+                WriteTriple(streamWriter, triple);
             }
         }
 
@@ -235,7 +242,7 @@ namespace ApacheJenaSample.Exporter
                     .Build();
         }
 
-        private static void WriteFlights(IStorageProvider connector, List<AircraftDto> aircrafts, List<AirportDto> airports, List<CarrierDto> carriers)
+        private static void WriteFlights(StreamWriter streamWriter, List<AircraftDto> aircrafts, List<AirportDto> airports, List<CarrierDto> carriers)
         {
             // Build Lookup Tables. We group by a criteria, to prevent duplicates 
             // from being used as dictionary keys.
@@ -255,11 +262,10 @@ namespace ApacheJenaSample.Exporter
             {
                 var flights = GetFlightData(csvFlightStatisticsFile);
 
-                foreach (var batch in flights
-                    .SelectMany(x => ConvertFlight(x, aircraftNodes, airportNodes, carrierNodes))
-                    .Batch(5000))
+                foreach (var triple in flights
+                    .SelectMany(x => ConvertFlight(x, aircraftNodes, airportNodes, carrierNodes)))
                 {
-                    AddTriples(connector, batch);
+                    WriteTriple(streamWriter, triple);
                 }
             }
         }
@@ -311,17 +317,16 @@ namespace ApacheJenaSample.Exporter
             return triples.Build();
         }
 
-        private static void WriteWeatherStations(IStorageProvider connector, IEnumerable<WeatherStationDto> stations, IEnumerable<AirportDto> airports)
+        private static void WriteWeatherStations(StreamWriter streamWriter, IEnumerable<WeatherStationDto> stations, IEnumerable<AirportDto> airports)
         {
             var airportNodes = airports
                 .GroupBy(x => x.AirportId).Select(x => x.First())
                 .ToDictionary(x => x.AirportId, x => x);
 
-            foreach (var batch in stations
-                .SelectMany(x => ConvertWeatherStation(x, airportNodes))
-                .Batch(1000))
+            foreach (var triple in stations
+                .SelectMany(x => ConvertWeatherStation(x, airportNodes)))
             {
-                AddTriples(connector, batch);
+                WriteTriple(streamWriter, triple);
             }
         }
 
@@ -346,7 +351,7 @@ namespace ApacheJenaSample.Exporter
             return triples.Build();
         }
 
-        private static void WriteWeatherDatas(IStorageProvider connector, IEnumerable<WeatherStationDto> stations)
+        private static void WriteWeatherDatas(StreamWriter streamWriter, IEnumerable<WeatherStationDto> stations)
         {
             var stationNodes = stations
                 .GroupBy(x => x.IATA).Select(x => x.First())
@@ -354,13 +359,12 @@ namespace ApacheJenaSample.Exporter
 
             foreach (var csvWeatherDataFile in csvWeatherDataFiles)
             {
-                var weatherDataList = GetWeatherData(csvWeatherDataFile).AsEnumerable();
+                var weatherDataList = GetWeatherData(csvWeatherDataFile);
 
-                foreach(var batch in weatherDataList
-                    .SelectMany(x => ConvertWeatherData(x, stationNodes))
-                    .Batch(1000))
+                foreach (var triple in weatherDataList
+                    .SelectMany(x => ConvertWeatherData(x, stationNodes)))
                 {
-                    AddTriples(connector, batch);
+                    WriteTriple(streamWriter, triple);
                 }
             }
         }
@@ -642,7 +646,7 @@ namespace ApacheJenaSample.Exporter
 
             public TripleBuilder Add(INode pred, INode obj)
             {
-                if(obj == null)
+                if (obj == null)
                 {
                     return this;
                 }
@@ -658,9 +662,11 @@ namespace ApacheJenaSample.Exporter
             }
         }
 
-        private static void AddTriples(IStorageProvider connector, IEnumerable<Triple> triples)
+        private static void WriteTriple(StreamWriter streamWriter, Triple triple)
         {
-            connector.UpdateGraph("/aviation", triples, new Triple[] { });
+            var value = turtleFormatter.Format(triple);
+
+            streamWriter.WriteLine(value);
         }
 
         #endregion

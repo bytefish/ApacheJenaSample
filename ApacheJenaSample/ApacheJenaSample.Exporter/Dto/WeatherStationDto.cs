@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using ApacheJenaSample.Exporter.Extensions;
 using System;
 
 namespace ApacheJenaSample.Exporter.Dto
 {
     public class WeatherStationDto
     {
-        public Uri Uri => new Uri(Constants.NsAviationWeatherStation, $"weather_station_{IATA}_{ICAO}");
+        public Uri Uri => UriHelper.Combine(Constants.NsAviationWeatherStation, $"weather_station_{IATA}_{ICAO}");
 
         /// <summary>
         /// 16 character station long name

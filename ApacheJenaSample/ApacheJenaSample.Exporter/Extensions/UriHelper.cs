@@ -16,6 +16,7 @@ namespace ApacheJenaSample.Exporter.Extensions
             return builder.Uri;
         }
 
+
         public static Uri AppendFragment(Uri uri, string fragment)
         {
             var builder = new UriBuilder(uri);
@@ -23,6 +24,15 @@ namespace ApacheJenaSample.Exporter.Extensions
             builder.Fragment = fragment;
 
             return builder.Uri;
+        }
+
+        public static Uri Combine(Uri uri, string path)
+        {
+            var absoluteUri = uri.AbsoluteUri;
+            var left = absoluteUri.TrimEnd('/');
+            var right = path.TrimStart('/');
+
+            return new Uri($"{left}/{right}");
         }
     }
 }

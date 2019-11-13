@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using ApacheJenaSample.Exporter.Extensions;
 using System;
 
 namespace ApacheJenaSample.Exporter.Dto
 {
     public class FlightDto
     {
-        public Uri Uri => new Uri(Constants.NsAviationFlight, GetUniqueIdentifier());
+        public Uri Uri => UriHelper.Combine(Constants.NsAviationFlight, GetUniqueIdentifier());
 
         public string FlightNumber { get; set; }
 
