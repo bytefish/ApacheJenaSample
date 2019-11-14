@@ -7,16 +7,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ApacheJenaSample.Csv.Aotp.Parser;
-using ApacheJenaSample.Exporter.Async;
 using ApacheJenaSample.Exporter.Dto;
-using ApacheJenaSample.Exporter.Extensions;
 using TinyCsvParser;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
 namespace ApacheJenaSample.Exporter
@@ -159,11 +155,11 @@ namespace ApacheJenaSample.Exporter
             var airports = GetAirportData(csvAirportFile).ToList();
             var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
 
-            using (FileStream fileStream = File.Create(@"G:\aviation_2014.ttl"))
+            using (FileStream fileStream = File.Create(@"G:\aviation_2014.ttl.gz"))
             {
                 using (GZipStream compress = new GZipStream(fileStream, CompressionMode.Compress))
                 {
-                    using (StreamWriter writer = new StreamWriter(fileStream))
+                    using (StreamWriter writer = new StreamWriter(compress))
                     {
                         WriteAircrafts(writer, aircrafts);
                         WriteAirports(writer, airports);

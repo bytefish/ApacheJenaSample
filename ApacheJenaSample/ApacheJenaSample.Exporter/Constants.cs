@@ -1,4 +1,7 @@
-﻿using ApacheJenaSample.Exporter.Extensions;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using ApacheJenaSample.Exporter.Extensions;
 using System;
 
 namespace ApacheJenaSample.Exporter

@@ -19,7 +19,7 @@ The idea is to use a [Triplestore] to infer knowledge about Aviation data, using
 
 ## Datasets ##
 
-## Airline On Time Performance (AOTP) Data ##
+## Airline On Time Performance (AOTP) ##
 
 Is my flight delayed? The plan is to analyze the Airline On Time Performance dataset, which contains:
 
@@ -35,7 +35,7 @@ More conveniently the [Revolution Analytics dataset repository] contains a ZIP F
 
 [Revolution Analytics dataset repository]: https://packages.revolutionanalytics.com/datasets/AirOnTime87to12/
 
-## ASOS Weather Data ##
+## ASOS / AWOS Weather ##
 
 [Iowa State University]: https://www.iastate.edu/
 
@@ -62,12 +62,14 @@ The [Iowa State University] hosts an archive of automated airport weather observ
 > provides the as-is collection of historical observations, very little quality control is done. 
 > "M" is used to denote missing data.
 
-[Daryl Herzmann](https://github.com/akrherz) of the [Iowa State University] provides a great Python 
-script to download the ASOS / AWOS data from the Webservices, which is available at:
+[Daryl Herzmann] of the [Iowa State University] provides a great Python script to download the 
+ASOS / AWOS data from the Webservices, which is available at:
 
 * [iem_scraper_example.py](https://github.com/akrherz/iem/blob/master/scripts/asos/iem_scraper_example.py)
 
-## The FAA Aircraft Registry Dataset ##
+[Daryl Herzmann]: https://github.com/akrherz
+
+## FAA Aircraft Registry ##
 
 [Power Query]: https://docs.microsoft.com/en-us/power-query/
 [Aircraft Registry Releasable Aircraft Database]: https://www.faa.gov/licenses_certificates/aircraft_certification/aircraft_registry/releasable_aircraft_download/
@@ -96,6 +98,10 @@ The dataset is described as:
 I have used some Excel magic to join the several files and build a view on the data, that could be parsed easily:
 
 * [https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA](https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA)
+
+## Building the Triples ##
+
+
 
 ## Apache Jena Fuseki ##
 
