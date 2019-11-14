@@ -6,7 +6,7 @@
 set JENA_HOME="G:\Apache_Jena\apache-jena-3.13.1"
 set JENA_TDBLOADER2="%JENA_HOME%\bat\tdb2_tdbloader.bat"
 set DATABASE_DIR="G:\Apache_Jena\data\aviation"
-set DATASET="Z:\Datasets\aviation_2014.ttl"
+set DATASET="G:\aviation_2014.ttl"
 
 pushd %JENA_HOME%
 
