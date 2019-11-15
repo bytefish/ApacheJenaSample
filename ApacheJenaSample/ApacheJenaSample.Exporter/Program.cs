@@ -142,34 +142,66 @@ namespace ApacheJenaSample.Exporter
             }
         }
 
-        private static INodeFactory nodeFactory = new NodeFactory();
-        private static TurtleFormatter turtleFormatter = new TurtleFormatter();
-
+        private static INodeFactory nodeFactory;
+        private static TurtleFormatter turtleFormatter;
+        private static NamespaceMapper namespaceMapper;
 
         public static void Main(string[] args)
         {
-            
+            // We don't want to use a Graph to prevent Memory 
+            // from exploding while writing the Data:
+            nodeFactory = new NodeFactory();
+
+            // We don't want to write the full URL for every 
+            // triple, because that will lead to a large TTL 
+            // file with redundant data:
+            namespaceMapper = new NamespaceMapper();
+
+            namespaceMapper.AddNamespace("ge", Constants.NsAviationGeneral);
+            namespaceMapper.AddNamespace("ap", Constants.NsAviationAirport);
+            namespaceMapper.AddNamespace("ac", Constants.NsAviationtAircraft);
+            namespaceMapper.AddNamespace("ca", Constants.NsAviationCarrier);
+            namespaceMapper.AddNamespace("fl", Constants.NsAviationFlight);
+            namespaceMapper.AddNamespace("we", Constants.NsAviationWeather);
+            namespaceMapper.AddNamespace("st", Constants.NsAviationWeatherStation);
+
+            // Create the TurtleFormatter with the Namespace Mappings:
+            turtleFormatter = new TurtleFormatter(namespaceMapper);
+
             // Write Aircrafts:
             var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
             var carriers = GetCarrierData(csvCarriersFile).ToList();
             var airports = GetAirportData(csvAirportFile).ToList();
             var stations = GetWeatherStationData(csvWeatherStationsFileName).ToList();
 
-            using (FileStream fileStream = File.Create(@"G:\aviation_2014.ttl.gz"))
+            using (FileStream fileStream = File.Create(@"G:\aviation_2014.ttl"))
             {
-                using (GZipStream compress = new GZipStream(fileStream, CompressionMode.Compress))
+                using (StreamWriter writer = new StreamWriter(fileStream))
                 {
-                    using (StreamWriter writer = new StreamWriter(compress))
-                    {
-                        WriteAircrafts(writer, aircrafts);
-                        WriteAirports(writer, airports);
-                        WriteCarriers(writer, carriers);
-                        WriteFlights(writer, aircrafts, airports, carriers);
-                        WriteWeatherStations(writer, stations, airports);
-                        WriteWeatherDatas(writer, stations);
-                    }
+                    WriteNamespaces(writer);
+                    WriteAircrafts(writer, aircrafts);
+                    WriteAirports(writer, airports);
+                    WriteCarriers(writer, carriers);
+                    WriteFlights(writer, aircrafts, airports, carriers);
+                    WriteWeatherStations(writer, stations, airports);
+                    WriteWeatherDatas(writer, stations);
                 }
             }
+        }
+
+        private static void WriteNamespaces(StreamWriter writer)
+        {
+            var namespaceMappings = namespaceMapper.Prefixes
+                .ToDictionary(x => x, x => namespaceMapper.GetNamespaceUri(x));
+
+            foreach (var namespaceMapping in namespaceMappings)
+            {
+                var formattedNamespaceMapping = turtleFormatter.FormatNamespace(namespaceMapping.Key, namespaceMapping.Value);
+
+                writer.WriteLine(formattedNamespaceMapping);
+            }
+
+            writer.WriteLine();
         }
 
         private static void WriteAircrafts(StreamWriter streamWriter, IEnumerable<AircraftDto> aircrafts)
