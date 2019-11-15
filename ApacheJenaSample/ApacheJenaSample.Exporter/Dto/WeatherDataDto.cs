@@ -5,7 +5,7 @@ namespace ApacheJenaSample.Exporter.Dto
 {
     public class WeatherDataDto
     {
-        public Uri Uri => UriHelper.Combine(Constants.NsAviationWeather, $"{station}_{valid?.ToString("yyyyMMddHHmmss")}");
+        public Uri Uri => UriHelper.SetFragment(Constants.NsAviationWeather, $"{station}_{valid?.ToString("yyyyMMddHHmmss")}");
 
         /// <summary>
         /// Three or four character site identifier

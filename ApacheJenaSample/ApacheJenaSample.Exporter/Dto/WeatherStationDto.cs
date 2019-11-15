@@ -8,7 +8,7 @@ namespace ApacheJenaSample.Exporter.Dto
 {
     public class WeatherStationDto
     {
-        public Uri Uri => UriHelper.Combine(Constants.NsAviationWeatherStation, $"weather_station_{IATA}_{ICAO}");
+        public Uri Uri => UriHelper.SetFragment(Constants.NsAviationWeatherStation, $"weather_station_{IATA}_{ICAO}");
 
         /// <summary>
         /// 16 character station long name

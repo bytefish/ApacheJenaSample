@@ -8,7 +8,7 @@ namespace ApacheJenaSample.Exporter.Dto
 {
     public class FlightDto
     {
-        public Uri Uri => UriHelper.Combine(Constants.NsAviationFlight, GetUniqueIdentifier());
+        public Uri Uri => UriHelper.SetFragment(Constants.NsAviationFlight, GetUniqueIdentifier());
 
         public string FlightNumber { get; set; }
 

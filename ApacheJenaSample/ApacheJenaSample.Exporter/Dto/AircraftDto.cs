@@ -9,7 +9,7 @@ namespace ApacheJenaSample.Exporter.Dto
 {
     public class AircraftDto
     {
-        public Uri Uri => UriHelper.Combine(Constants.NsAviationtAircraft, XmlConvert.EncodeName($"aircraft_{N_Number}"));
+        public Uri Uri => UriHelper.SetFragment(Constants.NsAviationtAircraft, XmlConvert.EncodeName($"aircraft_{N_Number}"));
 
         public string N_Number { get; set; }
 

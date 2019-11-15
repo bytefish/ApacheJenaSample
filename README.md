@@ -99,23 +99,24 @@ I have used some Excel magic to join the several files and build a view on the d
 
 * [https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA](https://github.com/bytefish/ApacheJenaSample/tree/master/Dataset/Resources/FAA)
 
-## Building the Triples ##
 
+## Statistics ##
 
-
-## Apache Jena Fuseki ##
-
-You can start the ``fuseki-server`` for this experiment by running: 
+From the Management Console at ``http://localhost:3030/dataset.html`` we can get the number of triples by using 
+the button ``count triples in all graphs``. This runs the following query on the Fuseki Server:
 
 ```
-fuseki-server --tdb2 --loc=<DATA_DIRECTORY> /aviation
+[2019-11-14 19:36:20] Fuseki     INFO  [12] GET http://localhost:3030/aviation/query?query=select+(count(*)+as+%3Fcount)+%7B%3Fs+%3Fp+%3Fo%7D
+[2019-11-14 19:36:20] Fuseki     INFO  [12] Query = select (count(*) as ?count) {?s ?p ?o}
+[2019-11-14 19:45:12] Fuseki     INFO  [12] 200 OK (531.933 s)
+[2019-11-14 19:45:12] Fuseki     INFO  [8] 200 OK (551.934 s)
 ```
 
-Where:
+We can see, that this operation took almost 10 minutes to execute and it yields the following results:
 
-* ``--tdb2`` instructs Apache Jena to use its new TDB2
-* ``--loc=<DATA_DIRECTORY>`` is the directory where the data should be written to
-* ``/aviation`` is the named Graph we register
-
+```
+graph name: default graph
+triples: 981240370
+```
 
 [Apache Jena]: https://jena.apache.org
