@@ -98,6 +98,47 @@ namespace ApacheJenaSample.Exporter
         }
     }
 
+    public class NonCachingQNameOutputMapper : QNameOutputMapper
+    {
+        private readonly Dictionary<string, string> uriToPrefixMapping;
+
+        public NonCachingQNameOutputMapper(INamespaceMapper nsmapper) 
+            : base(nsmapper)
+        {
+            uriToPrefixMapping = nsmapper.Prefixes
+                .ToDictionary(x => nsmapper.GetNamespaceUri(x).AbsoluteUri, x => x);
+        }
+
+        public override bool ReduceToQName(string uri, out string qname)
+        {
+            // Assign a default value:
+            qname = string.Empty;
+
+            // We can speedup the lookups a little here. All URIs passed into this 
+            // method are assumed to have the format "<BaseNamespaceURI>#<Fragment>". 
+            // This at least holds for the available URIs:
+            var components = uri.Split('#', 2, StringSplitOptions.RemoveEmptyEntries);
+
+            // We don't have a fragment part, so there is nothing we can prefix:
+            if(components.Length < 2)
+            {
+                return false;
+            }
+
+            var baseUri = components[0] + "#"; // This isn't nice, but add the "Fragment" char again...
+            var fragment = components[1];
+
+            if(!uriToPrefixMapping.TryGetValue(baseUri, out string prefix))
+            {
+                return false;
+            }
+
+            qname = prefix + ":" + fragment;
+
+            return true;
+        }
+    }
+
     public class Program
     {
         /// <summary>
@@ -165,8 +206,14 @@ namespace ApacheJenaSample.Exporter
             namespaceMapper.AddNamespace("we", Constants.NsAviationWeather);
             namespaceMapper.AddNamespace("st", Constants.NsAviationWeatherStation);
 
+            // There is a memory-leak when using the default QNameOutputMapper, 
+            // which adds all URIs encountered to a cache for speedup. This leads 
+            // to problems with millions of unique URIs, so we define a 
+            // a QNameOutputMapper with the Cache removed:
+            var outputMapper = new NonCachingQNameOutputMapper(namespaceMapper);
+
             // Create the TurtleFormatter with the Namespace Mappings:
-            turtleFormatter = new TurtleFormatter(namespaceMapper);
+            turtleFormatter = new TurtleFormatter(outputMapper);
 
             // Write Aircrafts:
             var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
