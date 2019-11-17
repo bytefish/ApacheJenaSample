@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using ApacheJenaSample.Csv.Aotp.Parser;
 using ApacheJenaSample.Exporter.Dto;
+using Microsoft.Extensions.Logging;
 using TinyCsvParser;
 using VDS.RDF;
 using VDS.RDF.Nodes;
@@ -156,11 +157,20 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
         }
 
         private static INodeFactory nodeFactory;
+
         private static TurtleFormatter turtleFormatter;
+
         private static NamespaceMapper namespaceMapper;
+
+        private static ILogger log;
 
         public static void Main(string[] args)
         {
+            // Create a Console Logger:
+            log = LoggerFactory
+                .Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug))
+                .CreateLogger<Program>();
+
             // We don't want to use a Graph to prevent Memory 
             // from exploding while writing the Data:
             nodeFactory = new NodeFactory();
@@ -187,7 +197,9 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
             // Create the TurtleFormatter with the Namespace Mappings:
             turtleFormatter = new TurtleFormatter(outputMapper);
 
-            // Write Aircrafts:
+            // Load the Base Data:
+            log.LogDebug("Loading Base Data ...");
+
             var aircrafts = GetAircraftData(csvAircraftsFile).ToList();
             var carriers = GetCarrierData(csvCarriersFile).ToList();
             var airports = GetAirportData(csvAirportFile).ToList();
@@ -210,6 +222,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
         private static void WriteNamespaces(StreamWriter writer)
         {
+            log.LogDebug("Writing Namespaces ...");
+
             var namespaceMappings = namespaceMapper.Prefixes
                 .ToDictionary(x => x, x => namespaceMapper.GetNamespaceUri(x));
 
@@ -225,6 +239,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
         private static void WriteAircrafts(StreamWriter streamWriter, IEnumerable<AircraftDto> aircrafts)
         {
+            log.LogDebug($"Writing Aircrafts: {csvAircraftsFile} ...");
+
             foreach (var triple in aircrafts
                 .SelectMany(x => ConvertAircraft(x)))
             {
@@ -251,6 +267,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
         private static void WriteAirports(StreamWriter streamWriter, IEnumerable<AirportDto> airports)
         {
+            log.LogDebug($"Writing Airports: {csvAirportFile} ...");
+
             foreach (var triple in airports
                 .SelectMany(x => ConvertAirport(x)))
             {
@@ -273,6 +291,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
         private static void WriteCarriers(StreamWriter streamWriter, IEnumerable<CarrierDto> carriers)
         {
+            log.LogDebug($"Writing Carriers: {csvCarriersFile} ...");
+
             foreach (var triple in carriers
                 .SelectMany(x => ConvertCarrier(x)))
             {
@@ -307,6 +327,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
             foreach (var csvFlightStatisticsFile in csvFlightStatisticsFiles)
             {
+                log.LogDebug($"Writing Flights: {csvFlightStatisticsFile} ...");
+
                 var flights = GetFlightData(csvFlightStatisticsFile);
 
                 foreach (var triple in flights
@@ -366,6 +388,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
         private static void WriteWeatherStations(StreamWriter streamWriter, IEnumerable<WeatherStationDto> stations, IEnumerable<AirportDto> airports)
         {
+            log.LogDebug($"Writing Weather Stations: {csvWeatherStationsFileName} ...");
+
             var airportNodes = airports
                 .GroupBy(x => x.AirportId).Select(x => x.First())
                 .ToDictionary(x => x.AirportId, x => x);
@@ -406,6 +430,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
             foreach (var csvWeatherDataFile in csvWeatherDataFiles)
             {
+                log.LogDebug($"Writing Weather Data: {csvWeatherDataFile} ...");
+
                 var weatherDataList = GetWeatherData(csvWeatherDataFile);
 
                 foreach (var triple in weatherDataList
