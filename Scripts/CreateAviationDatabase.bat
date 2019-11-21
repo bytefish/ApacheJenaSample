@@ -11,7 +11,3 @@ set DATASET="G:\aviation_2014.ttl"
 pushd %JENA_HOME%
 
 %JENA_TDBLOADER2% --loc=%DATABASE_DIR% %DATASET%
-
-popd
-
-pause

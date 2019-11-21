@@ -1,0 +1,66 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+
+    #editor {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+</style>
+
+<pre id="editor">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX : <.>
+
+SELECT *
+{ ?s ?p ?o }</pre>
+
+<script>
+    var editor = ace.edit("editor");
+
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/sparql");
+</script>
+
+@*<div id="mynetwork"></div>
+
+    <script type="text/javascript">
+
+        fetch('api/graph/schema')
+            .then((response) => {
+                // Now process the JSON:
+                response.json().then((data) => {
+
+                    // Log the data :
+                    console.log(data);
+
+                    // Now display the graph using vis.js:
+                    var options = {
+                        edges: {
+                            arrows: {
+                                to: { enabled: true },
+                                from: { enabled: false }
+                            }
+                        }
+                    };
+
+                    var container = document.getElementById('mynetwork');
+
+                    new vis.Network(container, data, options);
+                });
+            })
+            .catch((err) => {
+                alert("Fetching Graph Schema Failed: " + err);
+            });
+
+    </script>*@
