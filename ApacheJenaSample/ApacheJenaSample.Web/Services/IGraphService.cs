@@ -2,11 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using ApacheJenaSample.Web.Model;
+using System;
 
 namespace ApacheJenaSample.Web.Services
 {
     public interface IGraphService
     {
-        Graph GetGraphSchema(string schemaName);
+        VisDataSet Query(Uri endpointUri, string sparqlQuery);
     }
 }

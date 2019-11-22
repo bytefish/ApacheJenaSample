@@ -5,62 +5,113 @@
 }
 
 <style type="text/css" media="screen">
-    body {
-        overflow: hidden;
+    #editor {
+        width: 100%;
+        min-height: 500px;
     }
 
-    #editor {
-        margin: 0;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+    #mynetwork {
+        width: 100%;
+        height: 500px;
+        border: 1px solid lightgray;
     }
 </style>
 
+<div class="container">
+
+    <div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="sparqlEndpoint">SPARQL Endpoint</label>
+                <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="editor">Query</label>
 <pre id="editor">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
 PREFIX : <.>
 
-SELECT *
+CONSTRUCT  *
 { ?s ?p ?o }</pre>
+        </div>
+
+        <div class="form-row">
+            <button id="buttonSendQuery" class="btn btn-primary">Execute Query</button>
+        </div>
+
+        <div class="form-row">
+            <div id="mynetwork"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     var editor = ace.edit("editor");
 
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/sparql");
+
 </script>
 
-@*<div id="mynetwork"></div>
+<script type="text/javascript">
 
-    <script type="text/javascript">
+    window.onload = function () {
 
-        fetch('api/graph/schema')
-            .then((response) => {
-                // Now process the JSON:
-                response.json().then((data) => {
 
-                    // Log the data :
-                    console.log(data);
+        document.querySelector("#buttonSendQuery").onclick = function () {
 
-                    // Now display the graph using vis.js:
-                    var options = {
-                        edges: {
-                            arrows: {
-                                to: { enabled: true },
-                                from: { enabled: false }
+            var sparqlEndpoint = document.querySelector("#sparqlEndpoint").value;
+
+            var sparqlQuery = ace.edit("editor").getValue();
+
+            // Construct the Base URL:
+            var url = new URL('https://localhost:44321/api/graph/query');
+
+            var params = {
+                sparqlEndpoint: sparqlEndpoint,
+                sparqlQuery: sparqlQuery
+            };
+
+            // Append the Search Parameters:
+            url.search = new URLSearchParams(params).toString();
+
+            fetch(url)
+                // Wait for the Response:
+                .then((response) => {
+                    // Then process the JSON:
+                    response.json().then((data) => {
+
+                        // Log the data :
+                        console.log(data);
+
+                        // Now display the graph using vis.js:
+                        var options = {
+                            edges: {
+                                arrows: {
+                                    to: { enabled: true },
+                                    from: { enabled: false }
+                                }
                             }
-                        }
-                    };
+                        };
 
-                    var container = document.getElementById('mynetwork');
+                        var data = {
+                            nodes: data.nodes,
+                            edges: data.edges
+                        };
 
-                    new vis.Network(container, data, options);
+                        // create a network
+                        var container = document.getElementById('mynetwork');
+
+
+                        new vis.Network(container, data, options);
+                    });
+                })
+                .catch((err) => {
+                    alert("Fetching Graph Schema Failed: " + err);
                 });
-            })
-            .catch((err) => {
-                alert("Fetching Graph Schema Failed: " + err);
-            });
+        };
 
-    </script>*@
+    };
+
+</script>

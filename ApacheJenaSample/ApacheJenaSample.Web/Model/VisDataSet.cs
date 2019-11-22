@@ -2,15 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ApacheJenaSample.Web.Model
 {
-    public class Attribute
+    public class VisDataSet
     {
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("nodes")]
+        public List<VisNode> Nodes { get; set; }
 
-        [JsonProperty("is_nullable")]
-        public bool IsNullable { get; set; }
+        [JsonProperty("edges")]
+        public List<VisEdge> Edges { get; set; }
     }
 }

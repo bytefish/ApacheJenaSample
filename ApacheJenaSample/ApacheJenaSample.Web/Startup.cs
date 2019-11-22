@@ -33,9 +33,7 @@ namespace ApacheJenaSample.Web
                 });
             });
 
-            var connectionString = Configuration.GetConnectionString("SqlServer2019");
-
-            services.AddSingleton<IGraphService>(new GraphService(connectionString));
+            services.AddSingleton<IGraphService>(new GraphService());
 
             services
                 .AddMvc()

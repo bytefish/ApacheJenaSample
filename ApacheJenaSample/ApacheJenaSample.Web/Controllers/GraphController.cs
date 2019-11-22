@@ -2,9 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Microsoft.AspNetCore.Mvc;
-using ApacheJenaSample.Web.Controllers.Converter;
-using ApacheJenaSample.Web.Controllers.DTO;
 using ApacheJenaSample.Web.Services;
+using ApacheJenaSample.Web.Model;
+using System;
 
 namespace ApacheJenaSample.Web.Controllers
 {
@@ -19,14 +19,17 @@ namespace ApacheJenaSample.Web.Controllers
             this.service = service;
         }
 
-        [HttpGet("schema")]
-        public ActionResult<GraphDto> GetNodesSchema()
+        [HttpGet("query")]
+        public ActionResult<VisDataSet> Query(string sparqlEndpoint, string sparqlQuery)
         {
-            var source = service.GetGraphSchema("Nodes");
+            if(!Uri.TryCreate(sparqlEndpoint, UriKind.RelativeOrAbsolute, out Uri endpointUri))
+            {
+                return BadRequest();
+            }
 
-            var target = Converters.Convert(source);
+            var result = service.Query(endpointUri, sparqlQuery);
 
-            return Ok(target);
+            return Ok(result);
         }
     }
 }

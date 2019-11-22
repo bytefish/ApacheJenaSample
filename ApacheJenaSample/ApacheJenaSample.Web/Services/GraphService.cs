@@ -1,63 +1,61 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using Newtonsoft.Json;
 using ApacheJenaSample.Web.Model;
+using VDS.RDF.Storage;
+using VDS.RDF.Query;
+using VDS.RDF;
+using VDS.RDF.Writing;
+using System.Collections.Generic;
+using ApacheJenaSample.Web.Utils;
+using System;
 
 namespace ApacheJenaSample.Web.Services
 {
     public class GraphService : IGraphService
     {
-        private readonly string connectionString;
-
-        public GraphService(string connectionString)
+        public VisDataSet Query(Uri endpointUri, string sparqlQuery)
         {
-            this.connectionString = connectionString;
+            var endpoint = new SparqlRemoteEndpoint(endpointUri);
+
+            var result = endpoint.QueryWithResultGraph(sparqlQuery);
+
+            return Convert(result);
         }
 
-        public Graph GetGraphSchema(string schemaName)
+
+        private static VisDataSet Convert(IGraph graph)
         {
-            var json = GetSchemaAsJsonString(schemaName);
+            var nodes = new SimpleNodeMapper();
+            var edges = new List<VisEdge>();
 
-            return JsonConvert
-                .DeserializeObject<Graph[]>(json)
-                .FirstOrDefault();
-        }
+            var triples = graph.Triples;
 
-        private string GetSchemaAsJsonString(string schemaName)
-        {
-            if (schemaName == null)
+            foreach (var triple in triples)
             {
-                throw new ArgumentNullException("schemaName");
-            }
+                var fromNode = nodes.MapNode(triple.Subject);
+                var toNode = nodes.MapNode(triple.Object);
 
-            using (var connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-
-                using (IDbCommand command = connection.CreateCommand())
+                var edge = new VisEdge
                 {
-                    // Build the Stored Procedure Command:
-                    command.CommandText = "SELECT [Functions].[GetGraphSchema](@SchemaName)";
-                    command.CommandType = CommandType.Text;
+                    From = fromNode.Id,
+                    To = toNode.Id,
+                    Label = RdfUtils.MakeNodeString(triple.Predicate)
+                };
 
-                    // Create the Schema Name Parameter:
-                    SqlParameter parameter = new SqlParameter();
-
-                    parameter.ParameterName = "@SchemaName";
-                    parameter.SqlDbType = SqlDbType.NVarChar;
-                    parameter.Direction = ParameterDirection.Input;
-                    parameter.Value = schemaName;
-
-                    command.Parameters.Add(parameter);
-
-                    return command.ExecuteScalar() as string;
-                }
+                edges.Add(edge);
             }
+
+            return new VisDataSet
+            {
+                Nodes = nodes.GetNodes(),
+                Edges = edges
+            };
         }
+
     }
 }
