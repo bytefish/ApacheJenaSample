@@ -21,6 +21,7 @@ namespace ApacheJenaSample.Exporter
 
         public static class Types
         {
+            public const string Aircraft = "aircraft";
             public const string Flight = "flight";
             public const string Carrier = "carrier";
             public const string Airport = "airport";

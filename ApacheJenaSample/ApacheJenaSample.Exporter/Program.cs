@@ -251,7 +251,7 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
         private static List<Triple> ConvertAircraft(AircraftDto aircraft)
         {
             return new TripleBuilder(nodeFactory.AsUriNode(aircraft.Uri))
-                    .Add(nodeFactory.AsUriNode(Constants.Predicates.Type), nodeFactory.AsValueNode(Constants.Types.Airport))
+                    .Add(nodeFactory.AsUriNode(Constants.Predicates.Type), nodeFactory.AsValueNode(Constants.Types.Aircraft))
                     .Add(nodeFactory.AsUriNode(Constants.Predicates.AircraftEngineHorsepower), nodeFactory.AsValueNode(aircraft.EngineHorsepower))
                     .Add(nodeFactory.AsUriNode(Constants.Predicates.AircraftEngineManufacturer), nodeFactory.AsValueNode(aircraft.EngineManufacturer))
                     .Add(nodeFactory.AsUriNode(Constants.Predicates.AircraftEngineModel), nodeFactory.AsValueNode(aircraft.EngineModel))

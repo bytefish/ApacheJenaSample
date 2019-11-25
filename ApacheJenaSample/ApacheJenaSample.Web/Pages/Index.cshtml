@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-md-4 mb-3">
             <label for="sparqlEndpoint">SPARQL Endpoint</label>
-            <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" value="http://localhost:3030/sparql/query" required>
+            <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" value="http://localhost:3030/aviation/query" required>
         </div>
     </div>
 
@@ -37,8 +37,12 @@
 <pre id="editor" class="mb-0">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
 PREFIX : <.>
 
-CONSTRUCT  *
-{ ?s ?p ?o }</pre>
+CONSTRUCT { ?s ?p ?o } WHERE
+{
+  ?s ?p ?o
+}
+LIMIT 25
+</pre>
 
         </div>
         <div class="col-md-6 mb-3">
@@ -121,7 +125,6 @@ CONSTRUCT  *
                     alert("Fetching Graph Schema Failed: " + err);
                 });
         };
-
     };
 
 </script>

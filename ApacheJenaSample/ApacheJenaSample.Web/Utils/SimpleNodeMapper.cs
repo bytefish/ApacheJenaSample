@@ -11,21 +11,35 @@ using System;
 
 namespace ApacheJenaSample.Web.Utils
 {
-    public class SimpleNodeMapper
+    public class VisNodeMapper
     {
         private ConcurrentDictionary<string, VisNode> nodes;
 
         private long nextNodeId;
 
-        public SimpleNodeMapper()
+        public VisNodeMapper()
         {
             this.nodes = new ConcurrentDictionary<string, VisNode>();
             this.nextNodeId = 0;
         }
 
-        public VisNode MapSubjectNode(INode node)
+        public VisNode MapNode(INode node)
         {
-            
+            switch (node)
+            {
+                case BlankNode blankNode:
+                    return MapSubjectNode(blankNode);
+                case UriNode uriNode:
+                    return MapSubjectNode(uriNode);
+                case ILiteralNode literalNode:
+                    return MapLiteralNode(literalNode);
+                default:
+                    throw new InvalidOperationException($"Can't convert type {node.GetType()}");
+            }
+        }
+
+        private VisNode MapSubjectNode(INode node)
+        {   
             var nodeString = RdfUtils.MakeNodeString(node);
 
             Interlocked.Increment(ref nextNodeId);
@@ -40,7 +54,7 @@ namespace ApacheJenaSample.Web.Utils
             });
         }
 
-        public VisNode MapLiteralNode(INode node)
+        private VisNode MapLiteralNode(INode node)
         {
             var literalNode = node as BaseLiteralNode;
 
