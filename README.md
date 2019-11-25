@@ -129,7 +129,7 @@ In the example below, I am querying for a very specific flight with Tail Number 
 ``2014-03-18``. I am still learning SPARQL:
 
 <a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG">
-	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG" width="50%" height="50%" alt="Flight N965UW" />
+	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG" width="80%" height="80%" alt="Flight N965UW" />
 </a>
 
 [vis-network]: https://github.com/visjs/vis-network
