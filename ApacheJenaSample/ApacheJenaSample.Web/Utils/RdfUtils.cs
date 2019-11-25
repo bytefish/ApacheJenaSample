@@ -14,7 +14,14 @@ namespace ApacheJenaSample.Web.Utils
 
             if (uriNode != null)
             {
-                return uriNode.Uri.OriginalString;
+                string fragment = uriNode.Uri.Fragment?.Trim('#');
+
+                if(string.IsNullOrWhiteSpace(fragment))
+                {
+                    return uriNode.Uri.Fragment;
+                }
+
+                return fragment;
             }
 
             var blankNode = node as IBlankNode;
