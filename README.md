@@ -119,4 +119,18 @@ graph name: default graph
 triples: 981240370
 ```
 
+## Web Application to display a Graph ##
+
+I have written a tiny ASP.NET Core application, that takes a SPARQL Query and writes the results 
+as a [vis-network] Graph. It is very experimental and handles only very basic ``CONSTRUCT`` / ``DESCRIBE`` 
+queries.
+
+In the example below, I am querying for a very specific flight with Tail Number ``N965UW`` on 
+``2014-03-18``. I am still learning SPARQL:
+
+<a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG">
+	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG" width="50%" height="50%" alt="Flight N965UW" />
+</a>
+
+[vis-network]: https://github.com/visjs/vis-network
 [Apache Jena]: https://jena.apache.org

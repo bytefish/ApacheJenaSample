@@ -14,8 +14,6 @@ namespace ApacheJenaSample.Web.Services
     {
         public VisDataSet Query(Uri endpointUri, string sparqlQuery)
         {
-            endpointUri = new Uri("http://localhost:3030/aviation/query");
-
             var endpoint = new SparqlRemoteEndpoint(endpointUri);
 
             var result = endpoint.QueryWithResultGraph(sparqlQuery);
