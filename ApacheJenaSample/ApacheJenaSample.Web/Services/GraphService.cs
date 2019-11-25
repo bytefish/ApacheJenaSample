@@ -1,15 +1,9 @@
 ﻿// Copyright (c) Philipp Wagner. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using Newtonsoft.Json;
 using ApacheJenaSample.Web.Model;
-using VDS.RDF.Storage;
 using VDS.RDF.Query;
 using VDS.RDF;
-using VDS.RDF.Writing;
 using System.Collections.Generic;
 using ApacheJenaSample.Web.Utils;
 using System;
@@ -30,16 +24,17 @@ namespace ApacheJenaSample.Web.Services
 
         private static VisDataSet Convert(IGraph graph)
         {
-            var nodes = new SimpleNodeMapper();
+            var nodeMapper = new SimpleNodeMapper();
             var edges = new List<VisEdge>();
 
             var triples = graph.Triples;
 
             foreach (var triple in triples)
             {
-                var fromNode = nodes.MapNode(triple.Subject);
-                var toNode = nodes.MapNode(triple.Object);
+                VisNode fromNode = Convert(nodeMapper, triple.Subject);
+                VisNode toNode = Convert(nodeMapper, triple.Object);
 
+                // As Edge Label we simply use the URI Name:
                 var edge = new VisEdge
                 {
                     From = fromNode.Id,
@@ -52,10 +47,25 @@ namespace ApacheJenaSample.Web.Services
 
             return new VisDataSet
             {
-                Nodes = nodes.GetNodes(),
+                Nodes = nodeMapper.GetNodes(),
                 Edges = edges
             };
         }
 
+
+        private static VisNode Convert(SimpleNodeMapper mapper, INode node)
+        {
+            switch (node)
+            {
+                case BlankNode blankNode:
+                    return mapper.MapSubjectNode(blankNode);
+                case UriNode uriNode:
+                    return mapper.MapSubjectNode(uriNode);
+                case ILiteralNode literalNode:
+                    return mapper.MapLiteralNode(literalNode);
+                default:
+                    throw new InvalidOperationException($"Can't convert type {node.GetType()}");
+            }
+        }
     }
 }

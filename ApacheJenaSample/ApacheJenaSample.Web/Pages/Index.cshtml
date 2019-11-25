@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "SPARQL Graph Example";
 }
 
 <style type="text/css" media="screen">
@@ -18,32 +18,42 @@
 </style>
 
 <div class="container">
-
-    <div>
-        <div class="form-row">
-            <div class="col-md-4 mb-3">
-                <label for="sparqlEndpoint">SPARQL Endpoint</label>
-                <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" required>
-            </div>
+    <h1>SPARQL Query</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <p>You can use this page to query Apache Jena using SPARQL Quetries</p>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="sparqlEndpoint">SPARQL Endpoint</label>
+            <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" value="http://localhost:3030/sparql/query" required>
+        </div>
+    </div>
 
-        <div class="form-group">
+    <div class="row">
+        <div class="col-md-6 mb-3">
             <label for="editor">Query</label>
-<pre id="editor">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+<pre id="editor" class="mb-0">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
 PREFIX : <.>
 
 CONSTRUCT  *
 { ?s ?p ?o }</pre>
-        </div>
 
-        <div class="form-row">
-            <button id="buttonSendQuery" class="btn btn-primary">Execute Query</button>
         </div>
-
-        <div class="form-row">
+        <div class="col-md-6 mb-3">
+            <label for="mynetwork">Graph</label>
             <div id="mynetwork"></div>
         </div>
+
     </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <button id="buttonSendQuery" class="btn btn-primary">Execute Query</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -58,12 +68,15 @@ CONSTRUCT  *
 
     window.onload = function () {
 
-
         document.querySelector("#buttonSendQuery").onclick = function () {
 
-            var sparqlEndpoint = document.querySelector("#sparqlEndpoint").value;
+            var sparqlEndpoint = document
+                .querySelector("#sparqlEndpoint")
+                .value;
 
-            var sparqlQuery = ace.edit("editor").getValue();
+            var sparqlQuery = ace
+                .edit("editor")
+                .getValue();
 
             // Construct the Base URL:
             var url = new URL('https://localhost:44321/api/graph/query');
@@ -85,7 +98,6 @@ CONSTRUCT  *
                         // Log the data :
                         console.log(data);
 
-                        // Now display the graph using vis.js:
                         var options = {
                             edges: {
                                 arrows: {
@@ -96,13 +108,11 @@ CONSTRUCT  *
                         };
 
                         var data = {
-                            nodes: data.nodes,
-                            edges: data.edges
+                            nodes: new vis.DataSet(data.nodes),
+                            edges: new vis.DataSet(data.edges)
                         };
 
-                        // create a network
                         var container = document.getElementById('mynetwork');
-
 
                         new vis.Network(container, data, options);
                     });

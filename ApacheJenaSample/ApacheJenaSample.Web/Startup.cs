@@ -33,7 +33,7 @@ namespace ApacheJenaSample.Web
                 });
             });
 
-            services.AddSingleton<IGraphService>(new GraphService());
+            services.AddSingleton<IGraphService>(new MockGraphService());
 
             services
                 .AddMvc()

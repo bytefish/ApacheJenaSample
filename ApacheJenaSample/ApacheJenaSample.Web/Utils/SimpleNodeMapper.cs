@@ -7,6 +7,7 @@ using VDS.RDF;
 using System.Collections.Generic;
 using System.Threading;
 using System.Collections.Concurrent;
+using System;
 
 namespace ApacheJenaSample.Web.Utils
 {
@@ -22,18 +23,40 @@ namespace ApacheJenaSample.Web.Utils
             this.nextNodeId = 0;
         }
 
-        public VisNode MapNode(INode node)
+        public VisNode MapSubjectNode(INode node)
         {
+            
             var nodeString = RdfUtils.MakeNodeString(node);
+
+            Interlocked.Increment(ref nextNodeId);
 
             return nodes.GetOrAdd(nodeString, (key) =>
             {
-                Interlocked.Increment(ref nextNodeId);
-
                 return new VisNode()
                 {
                     Id = nextNodeId,
                     Label = key
+                };
+            });
+        }
+
+        public VisNode MapLiteralNode(INode node)
+        {
+            var literalNode = node as BaseLiteralNode;
+
+            if(literalNode == null)
+            {
+                throw new Exception($"{node} is not a Literal Node");
+            }
+
+            Interlocked.Increment(ref nextNodeId);
+
+            return nodes.GetOrAdd($"Literal_{nextNodeId}", (key) =>
+            {
+                return new VisNode()
+                {
+                    Id = nextNodeId,
+                    Label = literalNode.Value
                 };
             });
         }
