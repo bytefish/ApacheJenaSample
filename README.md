@@ -119,14 +119,31 @@ graph name: default graph
 triples: 981240370
 ```
 
-## Web Application to display a Graph ##
+## ASP.NET Core Web Application to display RDF Graphs ##
 
 I have written a tiny ASP.NET Core application, that takes a SPARQL Query and writes the results 
 as a [vis-network] Graph. It is very experimental and handles only very basic ``CONSTRUCT`` / ``DESCRIBE`` 
 queries.
 
-In the example below, I am querying for a very specific flight with Tail Number ``N965UW`` on 
-``2014-03-18``. I am still learning SPARQL:
+In the example below, I am querying for a very specific flight with Tail Number ``N965UW``, Flight Number "1981" 
+on the day ``2014-03-18``. I am still learning SPARQL, so there might be better ways to express it:
+
+```sparql
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX : <.>
+
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+  ?flight flight:tail_number "N965UW" .
+  ?flight flight:flight_number "1981" .
+  ?flight flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime .
+  ?flight (<>|!<>)* ?s . 
+  ?s ?p ?o 
+}
+```
+
+And this query yields the flight and all nodes reachable from the flight:
 
 <a href="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG">
 	<img src="https://raw.githubusercontent.com/bytefish/ApacheJenaSample/master/Screenshots/GraphVisualization.PNG" width="80%" height="80%" alt="Flight N965UW" />
