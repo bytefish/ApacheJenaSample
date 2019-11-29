@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using ApacheJenaSample.Csv.Aotp.Parser;
@@ -530,7 +529,7 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
                     EngineManufacturer = x.EngineManufacturer,
                     EngineModel = x.EngineModel,
                     EngineThrust = x.EngineThrust,
-                    N_Number = x.N_Number,
+                    N_Number = x.N_Number?.Trim('N'),
                     SerialNumber = x.SerialNumber,
                     UniqueId = x.UniqueId
                 });
@@ -579,7 +578,7 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
                     Carrier = x.UniqueCarrier,
                     OriginAirport = x.OriginAirport,
                     DestinationAirport = x.DestinationAirport,
-                    TailNumber = x.TailNumber,
+                    TailNumber = x.TailNumber?.Trim('N'),
                     ArrivalDelay = x.ArrivalDelay,
                     CancellationCode = x.CancellationCode,
                     DepartureDelay = x.DepartureDelay,

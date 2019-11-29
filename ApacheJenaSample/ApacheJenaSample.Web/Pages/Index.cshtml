@@ -34,14 +34,18 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label for="editor">Query</label>
-<pre id="editor" class="mb-0">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
-PREFIX : <.>
+            <pre id="editor" class="mb-0">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
+PREFIX flight: &lt;http://www.bytefish.de/aviation/Flight#&gt;
+PREFIX : &lt;.&gt;
 
-CONSTRUCT { ?s ?p ?o } WHERE
-{
-  ?s ?p ?o
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+  ?flight flight:tail_number "N965UW" .
+  ?flight flight:flight_number "1981" .
+  ?flight flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime .
+  ?flight (<>|!<>)* ?s . 
+  ?s ?p ?o 
 }
-LIMIT 25
 </pre>
 
         </div>
@@ -104,6 +108,9 @@ LIMIT 25
 
                         var options = {
                             edges: {
+                                font: {
+                                    align: 'middle'
+                                },
                                 arrows: {
                                     to: { enabled: true },
                                     from: { enabled: false }
