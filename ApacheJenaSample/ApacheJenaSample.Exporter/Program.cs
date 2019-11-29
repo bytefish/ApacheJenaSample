@@ -489,7 +489,7 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
 
             if (stations.TryGetValue(weather.station, out WeatherStationDto station))
             {
-                triples.Add(nodeFactory.AsUriNode(Constants.Predicates.HasWeatherStation), nodeFactory.AsUriNode(station.Uri));
+                triples.Add(nodeFactory.AsUriNode(Constants.Predicates.HasStation), nodeFactory.AsUriNode(station.Uri));
             }
 
             return triples.Build();
