@@ -413,9 +413,13 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.WeatherStationSynop), nodeFactory.AsValueNode(station.SYNOP));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.WeatherStationElevation), nodeFactory.AsValueNode(station.Elevation));
 
+
             if (airports.TryGetValue(station.IATA, out AirportDto airport))
             {
-                triples.Add(nodeFactory.AsUriNode(Constants.Predicates.HasWeatherStation), nodeFactory.AsUriNode(airport.Uri));
+                triples.AddWithSubject(
+                    subj: nodeFactory.AsUriNode(airport.Uri), 
+                    pred: nodeFactory.AsUriNode(Constants.Predicates.HasWeatherStation), 
+                    obj: nodeFactory.AsUriNode(station.Uri));
             }
 
             return triples.Build();
@@ -717,6 +721,18 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
             }
 
             public TripleBuilder Add(INode pred, INode obj)
+            {
+                if (obj == null)
+                {
+                    return this;
+                }
+
+                triples.Add(new Triple(subj, pred, obj));
+
+                return this;
+            }
+
+            public TripleBuilder AddWithSubject(INode subj, INode pred, INode obj)
             {
                 if (obj == null)
                 {
