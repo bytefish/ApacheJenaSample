@@ -390,8 +390,8 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
             log.LogDebug($"Writing Weather Stations: {csvWeatherStationsFileName} ...");
 
             var airportNodes = airports
-                .GroupBy(x => x.AirportId).Select(x => x.First())
-                .ToDictionary(x => x.AirportId, x => x);
+                .GroupBy(x => x.IATA).Select(x => x.First())
+                .ToDictionary(x => x.IATA, x => x);
 
             foreach (var triple in stations
                 .SelectMany(x => ConvertWeatherStation(x, airportNodes)))
