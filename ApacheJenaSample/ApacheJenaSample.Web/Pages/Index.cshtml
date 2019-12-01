@@ -7,17 +7,17 @@
 <style type="text/css" media="screen">
     #editor {
         width: 100%;
-        min-height: 500px;
+        min-height: 650px;
     }
 
     #mynetwork {
         width: 100%;
-        height: 500px;
+        height: 650px;
         border: 1px solid lightgray;
     }
 </style>
 
-<div class="container">
+<div style="padding: 15px;">
     <h1>SPARQL Query</h1>
     <div class="row">
         <div class="col-md-12">
@@ -30,9 +30,8 @@
             <input type="text" class="form-control" id="sparqlEndpoint" placeholder="/sparql/endpoint" value="http://localhost:3030/aviation/query" required>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4 mb-3">
             <label for="editor">Query</label>
             <pre id="editor" class="mb-0">PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;
 PREFIX flight: &lt;http://www.bytefish.de/aviation/Flight#&gt;
@@ -40,7 +39,7 @@ PREFIX : &lt;.&gt;
 
 CONSTRUCT { ?s ?p ?o }
 WHERE {
-  ?flight flight:tail_number "N965UW" .
+  ?flight flight:tail_number "965UW" .
   ?flight flight:flight_number "1981" .
   ?flight flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime .
   ?flight (<>|!<>)* ?s . 
@@ -49,17 +48,15 @@ WHERE {
 </pre>
 
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-8 mb-3">
             <label for="mynetwork">Graph</label>
             <div id="mynetwork"></div>
         </div>
-
-    </div>
-
-    <div class="row">
         <div class="col-md-12 mb-3">
             <button id="buttonSendQuery" class="btn btn-primary">Execute Query</button>
         </div>
+
+
     </div>
 
 </div>
