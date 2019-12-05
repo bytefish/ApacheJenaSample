@@ -357,6 +357,7 @@ public class NonCachingQNameOutputMapper : QNameOutputMapper
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightLateAircraftDelay), nodeFactory.AsValueNode(flight.LateAircraftDelay));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightNasDelay), nodeFactory.AsValueNode(flight.NasDelay));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightSecurityDelay), nodeFactory.AsValueNode(flight.SecurityDelay));
+            triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightCancellationCode), nodeFactory.AsValueNode(flight.CancellationCode));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightWeatherDelay), nodeFactory.AsValueNode(flight.WeatherDelay));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightScheduledDepartureTime), nodeFactory.AsValueNode(flight.ScheduledDepartureTime));
             triples.Add(nodeFactory.AsUriNode(Constants.Predicates.FlightActualDepartureTime), nodeFactory.AsValueNode(flight.ActualDepartureTime));

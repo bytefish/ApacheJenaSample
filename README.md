@@ -17,6 +17,99 @@ The idea is to use a [Triplestore] to infer knowledge about Aviation data, using
 
 [Triplestore]: https://en.wikipedia.org/wiki/Triplestore
 
+## Queries ##
+
+Here are some example SPARQL queries for the dataset.
+
+### Get all Nodes reachable for a specific Flight ###
+
+```sparql
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX : <.>
+
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+  ?flight flight:tail_number "965UW" ;
+    flight:flight_number "1981" ;
+    flight:flight_date "2014-03-18T00:00:00"^^xsd:dateTime ;
+    (<>|!<>)* ?s .
+    ?s ?p ?o 
+}
+```
+
+### Get all Weather Measurements for a given Flight ##
+
+```sparql
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX general: <http://www.bytefish.de/aviation/General#>
+PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
+PREFIX : <.>
+
+SELECT  ?weather_timestamp ?predicate ?object
+WHERE {
+  
+  # Bind query variables:
+  BIND("2014-03-18T00:00:00"^^xsd:dateTime AS ?flight_date) .
+  BIND("965UW" AS ?tail_number) .
+  BIND("1981" AS ?flight_number) .
+  
+  # Select the flight(s) with the bound variables:
+  ?flight flight:tail_number ?tail_number ;
+          flight:flight_number ?flight_number ;
+          flight:flight_date ?flight_date ;
+          general:has_origin_airport ?origin .
+  
+  # Get the Weather Station associated with the Airport:
+  ?origin general:has_weather_station ?station .
+  
+  # Get all predicates and objects for the Weather Station:
+  ?weather general:has_station ?station ; 
+           weather:timestamp ?weather_timestamp ;
+           ?predicate ?object .
+  
+  # But filter only for values of the given day:
+  FILTER( year(?weather_timestamp) = year(?flight_date) 
+    && month(?weather_timestamp) = month(?flight_date) 
+    && day(?weather_timestamp) = day(?flight_date))
+}
+ORDER BY ASC(?weather_timestamp)
+LIMIT 1000
+```
+
+### Cancelled Flights due to Weather ###
+
+To get the Cancelled Flights due to weather, we have to query for the CancellationCode "B" as defined 
+by the NTSB Airline On Time Performance Data:
+
+```sparql
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX general: <http://www.bytefish.de/aviation/General#>
+PREFIX flight: <http://www.bytefish.de/aviation/Flight#>
+PREFIX weather: <http://www.bytefish.de/aviation/Weather#>
+PREFIX : <.>
+
+SELECT ?tail_number ?flight_number ?flight_date ?scheduled_departure ?origin ?destination ?cancellation_code
+WHERE {
+  
+  # Bind query variables:
+  BIND("B" AS ?cancellation_code) .
+  
+  # Select the flight(s) with the bound variables:
+  ?flight flight:cancellation_code ?cancellation_code ;
+          flight:tail_number ?tail_number ;
+          flight:flight_number ?flight_number ;
+          flight:flight_date ?flight_date ;
+          flight:scheduled_departure_time ?scheduled_departure ;
+          general:has_origin_airport ?origin ;
+          general:has_destination_airport ?destination .
+
+}
+ORDER BY ASC(?flight_date) ASC(?scheduled_departure)
+LIMIT 1000
+```
+
 ## Datasets ##
 
 ## Airline On Time Performance (AOTP) ##
