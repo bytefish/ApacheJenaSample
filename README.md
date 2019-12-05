@@ -80,8 +80,8 @@ LIMIT 1000
 
 ### Cancelled Flights due to Weather ###
 
-To get the Cancelled Flights due to weather, we have to query for the CancellationCode "B" as defined 
-by the NTSB Airline On Time Performance Data:
+To get all cancelled flights due to weather events, we have to query for the cancellation 
+code ``B`` as defined by the NTSB Airline On Time Performance Data:
 
 ```sparql
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -109,6 +109,25 @@ WHERE {
 ORDER BY ASC(?flight_date) ASC(?scheduled_departure)
 LIMIT 1000
 ```
+
+There is additional information given on an NTSB page called "Understanding the Reporting of Causes of 
+Flight Delays and Cancellations", that discusses the delays due to weather:
+
+* https://www.bts.gov/topics/airlines-and-airports/understanding-reporting-causes-flight-delays-and-cancellations
+
+In the FAQ it says:
+
+> **How many flights were really delayed by weather?**
+>
+> A true picture of total weather-related delays requires several steps. First, the extreme 
+> weather delays must be combined with the NAS weather category. Second, a calculation must 
+> be made to determine the weather-related delays included in the "late-arriving aircraft" 
+> category. Airlines do not report the causes of the late-arriving aircraft but an allocation 
+> can be made using the proportion of weather related-delays and total flights in the other 
+> categories. Adding the weather-related delays to the extreme weather and NAS weather categories 
+> would result in weather's share of all flight delays.
+
+So it may be neccessary to include additional datasets to get a true picture about delays.
 
 ## Datasets ##
 
